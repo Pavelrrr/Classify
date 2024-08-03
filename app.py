@@ -3,7 +3,7 @@ import joblib
 import os
 import logging
 from werkzeug.exceptions import BadRequest
-
+###
 app = Flask(__name__)
 
 # Настройка логирования
@@ -27,9 +27,9 @@ def home():
     logger.info("Получен GET-запрос к корневому пути")
     return jsonify({"message": "Сервер работает. Используйте путь /classify для классификации текста."})
 
-@app.route('/classify', methods=['POST'])
+@app.route('/classify2', methods=['POST'])
 def classify():
-    logger.info("Получен POST-запрос к пути /classify")
+    logger.info("Получен POST-запрос к пути /classify2")
     try:
         data = request.get_json()
         if not data or 'text' not in data:
