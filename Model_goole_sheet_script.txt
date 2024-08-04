@@ -1,0 +1,35 @@
+function classifyText() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var range = sheet.getRange("A2:A");
+  var values = range.getValues();
+
+  for (var i = 0; i < values.length; i++) {
+    var text = values[i][0];
+    if (text) {
+      try {
+        // Формируем URL для POST-запроса
+        var url = 'https://classify2-pavelrrr.amvera.io/classify2';
+        
+        // Отправляем POST-запрос с JSON-данными
+        var response = UrlFetchApp.fetch(url, {
+          method: 'post',
+          contentType: 'application/json',
+          payload: JSON.stringify({ text: text }),
+          muteHttpExceptions: true
+        });
+
+        var responseCode = response.getResponseCode();
+        var responseBody = response.getContentText();
+
+        if (responseCode === 200) {
+          var json = JSON.parse(responseBody);
+          sheet.getRange(i + 2, 2).setValue(json.classification);
+        } else {
+          sheet.getRange(i + 2, 2).setValue("Ошибка: " + responseCode + " " + responseBody);
+        }
+      } catch (e) {
+        sheet.getRange(i + 2, 2).setValue("Исключение: " + e.toString());
+      }
+    }
+  }
+}
